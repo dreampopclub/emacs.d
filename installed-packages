@@ -1,0 +1,18 @@
+  auto-complete      20141111.... installed             Auto Completion for GNU Emacs
+  emmet-mode         20141126.548 installed             Unofficial Emmet's support for emacs
+  epl                20140823.609 installed             Emacs Package Library
+  git-commit-mode    20141014.... installed             Major mode for editing git commit messages
+  git-rebase-mode    20140928.... installed             Major mode for editing git rebase files
+  js2-mode           20141201.509 installed             Improved JavaScript editing mode
+  json-mode          20141105.138 installed             Major mode for editing JSON files
+  json-reformat      20141210.... installed             Reformatting tool for JSON
+  json-snatcher      20140527.... installed             Grabs the path to JSON values in a JSON file
+  magit              20141129.928 installed             control Git from Emacs
+  markdown-mode      20150121.... installed             Emacs Major mode for Markdown-formatted text files
+  pkg-info           20140610.630 installed             Information about packages
+  popup              20141120.... installed             Visual Popup User Interface
+  rainbow-delimiters 20141107.... installed             Highlight nested parens, brackets, braces a different color at each depth.
+  ruby-block         20131211.331 installed             highlight matching block
+  ruby-test-mode     20140727.204 installed             Minor mode for Behaviour and Test Driven
+  twilight-anti-b... 20140810.34  installed             A soothing Emacs 24 light-on-dark theme
+  web-mode           20141211.... installed             major mode for editing html templates

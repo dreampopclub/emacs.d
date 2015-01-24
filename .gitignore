@@ -1,0 +1,8 @@
+*~
+*.html
+/.ercpasswords
+/ac-comphist.dat
+/auto-save-list/
+/elpa/
+/ido.last
+/tramp
