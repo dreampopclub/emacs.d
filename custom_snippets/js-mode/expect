@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: expect
+# key: describe
+# group: Jasmine
+# --
+expect($0)

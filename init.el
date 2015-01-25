@@ -159,3 +159,9 @@
 ;;Because the OS Gui app environment
 ;;does not have anything from .bashrc
 ;;(setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
+
+(require 'yasnippet)
+(yas-global-mode 1)
+(yas-load-directory "~/.emacs.d/custom_snippets")
+(add-hook 'term-mode-hook (lambda()
+    (setq yas-dont-activate t)))
