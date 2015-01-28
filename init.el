@@ -164,4 +164,9 @@
 (yas-global-mode 1)
 (yas-load-directory "~/.emacs.d/custom_snippets")
 (add-hook 'term-mode-hook (lambda()
-    (setq yas-dont-activate t)))
+                            (setq yas-dont-activate t)))
+
+;;save backups in /backups
+(setq backup-directory-alist
+      `(("." . ,(concat user-emacs-directory "backups"))))
+
