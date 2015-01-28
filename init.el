@@ -201,3 +201,6 @@
 ;; set up for helm projectile file find
 (global-set-key (kbd "C-x C-f")  'helm-projectile)
 (global-set-key (kbd "C-x C-o")  'find-file)
+
+;; obvs
+(nyan-mode +1)
