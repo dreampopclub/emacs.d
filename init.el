@@ -1,18 +1,80 @@
+(load "~/.emacs-env.el")
+
 (require 'package)
 
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
-;; Helpful keyboard tweak to make things easier on OS X.
-(setq mac-command-modifier 'meta)
-(setq mac-option-modifier 'super)
+;; do ubuntu/home stuff
+(when (eq emacs-env 'nell)
+  ;; helm stuff
+
+  (require 'helm)
+  (require 'helm-config)
+
+  ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+  ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+  ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+  (global-set-key (kbd "C-c h") 'helm-command-prefix)
+  (global-unset-key (kbd "C-x c"))
+
+  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+  (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+  (global-set-key (kbd "C-x b")  'helm-mini)
+
+  (when (executable-find "curl")
+    (setq helm-google-suggest-use-curl-p t))
+
+  (setq helm-split-window-in-side-p           0 ; open helm buffer inside current window, not occupy whole other window
+        helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+        helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+        helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+        helm-ff-file-name-history-use-recentf t)
+
+  (helm-mode 1)
+
+  ;; ;; set up for helm projectile file find
+  ;; (global-set-key (kbd "C-x C-f")  'helm-find-files)
+  ;; (global-set-key (kbd "C-x C-o")  'find-file)
+  )
+
+;; do macbook and work stuff
+(when (eq emacs-env 'mbp)
+  ;; Helpful keyboard tweak to make things easier on OS X.
+  (setq mac-command-modifier 'meta)
+  (setq mac-option-modifier 'super)
+
+  ;;default open file dir
+  (setq default-directory "~/src/m3/")
+
+  ;;sass compile dirs
+  ;;(setq scss-output-directory "../../maestro_activity_engine/activities_general/")
+  (setq scss-output-directory "../maestro_activity_engine/")
+  ;;(setq scss-output-directory "../../activities/")
+  ;;(setq scss-output-directory "../")
+  ;;(setq scss-compile-at-save t)
+
+  ;;use projectile
+  (global-set-key (kbd "C-x C-f") 'projectile-find-file)
+  (global-set-key (kbd "C-x C-o") 'find-file)
+
+  ;;Use this if you can't load with the automator script
+  ;;Because the OS Gui app environment
+  ;;does not have anything from .bashrc
+  ;;(setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
+  
+  (load "~/.emacs.d/erc"))
 
 ;; No splash screen.
 (setq inhibit-startup-message t)
 
 ;; Visual bell instead of beeping
 (setq ring-bell-function 'ignore)
+
+;;don't show toolbar
+(tool-bar-mode -1)
 
 ;; Interactively do shit!
 (require 'ido)
@@ -51,6 +113,10 @@
 ;; Javascript
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
+;; start in css mode
+(add-to-list 'auto-mode-alist '("\\.css\\'" . css-mode))
+(add-to-list 'auto-mode-alist '("\\.scss\\'" . css-mode))
+
 ;; Handy functions courtesy of whattheemacs.d
 (defun open-line-below ()
   (interactive)
@@ -75,12 +141,8 @@
 ;; No more minimizing Emacs by accident.
 (global-unset-key (kbd "C-z"))
 
-;;default open file dir
-(setq default-directory "~/src/m3/")
-
 ;;theme
 (load-theme 'twilight-anti-bright t)
-
 
 ;;revert all buffers that are visiting a file
 (defun revert-all-buffers ()
@@ -92,29 +154,8 @@
         (revert-buffer t t t) )))
   (message "Refreshed open files.") )
 
-;;(setq scss-output-directory "../../maestro_activity_engine/activities_general/")
-(setq scss-output-directory "../maestro_activity_engine/")
-;;(setq scss-output-directory "../../activities/")
-;;(setq scss-output-directory "../")
-;;(setq scss-compile-at-save t)
-
-
-;; Make rinari jump to/from javascript source files and specs.
-;; C-c ; f j
-;;(require 'rinari)
-;; (setcdr (assoc 'javascript rinari-jump-schema)
-;;         '("j"
-;;           (("app/assets/javascripts/\\1.js" . "spec/javascripts/\\1_spec.js")
-;;            ("spec/javascripts/\\1_spec.js"  . "app/assets/javascripts/\\1.js")
-;;            (t . "spec/javascripts/.*")
-;;            (t . "app/javascripts/.*"))
-;;           t))
-;; (rinari-apply-jump-schema rinari-jump-schema)
-
-
 ;;add newline at end of file
 (setq require-final-newline t)
-
 
 ;;magit status
 (global-set-key (kbd "C-c g") 'magit-status)
@@ -141,12 +182,6 @@
 ;;icicles 
 ;;(require 'icicles)
 
-(load "~/.emacs.d/erc")
-
-;;don't show toolbar
-(tool-bar-mode -1)
-
-
 ;;Web-mode customizations
 (setq web-mode-markup-indent-offset 2)
 (setq web-mode-css-indent-offset 2)
@@ -156,9 +191,6 @@
 (require 'ruby-block)
 (ruby-block-mode t)
 
-;;Because the OS Gui app environment
-;;does not have anything from .bashrc
-;;(setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
 
 (require 'yasnippet)
 (yas-global-mode 1)
@@ -170,44 +202,7 @@
 (setq backup-directory-alist
       `(("." . ,(concat user-emacs-directory "backups"))))
 
-
-;; helm stuff
-
-(require 'helm)
-(require 'helm-config)
-
-;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
-;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
-;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-;; (global-set-key (kbd "C-c h") 'helm-command-prefix)
-;; (global-unset-key (kbd "C-x c"))
-
-;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
-;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-;; (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
-;; (global-set-key (kbd "C-x b")  'helm-mini)
-
-;; (when (executable-find "curl")
-;;   (setq helm-google-suggest-use-curl-p t))
-
-;; (setq helm-split-window-in-side-p           0 ; open helm buffer inside current window, not occupy whole other window
-;;       helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-;;       helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-;;       helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-;;       helm-ff-file-name-history-use-recentf t)
-
-;; (helm-mode 1)
-
-;; ;; set up for helm projectile file find
-;; (global-set-key (kbd "C-x C-f")  'helm-find-files)
-;; (global-set-key (kbd "C-x C-o")  'find-file)
-
 ;; obvs
 ;;(nyan-mode +1)
 
-(global-set-key (kbd "C-x C-f") 'projectile-find-file)
-(global-set-key (kbd "C-x C-o") 'find-file)
 
-;; start in css mode
-(add-to-list 'auto-mode-alist '("\\.css\\'" . css-mode))
-(add-to-list 'auto-mode-alist '("\\.scss\\'" . css-mode))
