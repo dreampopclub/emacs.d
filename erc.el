@@ -30,8 +30,9 @@
 
 ;; Nickname
 (setq erc-nick "rainingfish")
+(setq vhl-nick "andrea")
 
-;; Don't steal focus 
+;; Don't steal focus
 (setq erc-join-buffer 'bury)
 
 ;; Interpret mIRC-style color commands in IRC chats
@@ -95,7 +96,12 @@
   (erc :server "irc.freenode.net"
        :port 6667
        :nick erc-nick
-       :password freenode-password))
+       :password freenode-password)
+  ;; (erc-tls :server "vhl.irc.slack.com"
+  ;;          :port 6697
+  ;;          :nick vhl-nick
+  ;;          :password slack-password)
+  )
 
 (defun filter-erc-server-buffers ()
   (delq nil

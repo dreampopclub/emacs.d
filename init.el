@@ -20,7 +20,7 @@
 
   ;;sass compile dirs
   ;;(setq scss-output-directory "../../maestro_activity_engine/activities_general/")
-  (setq scss-output-directory "../maestro_activity_engine/")
+  ;;(setq scss-output-directory "../maestro_activity_engine/")
   ;;(setq scss-output-directory "../../activities/")
   ;;(setq scss-output-directory "../")
   ;;(setq scss-compile-at-save t)
@@ -33,9 +33,8 @@
   ;;Because the OS Gui app environment
   ;;does not have anything from .bashrc
   ;;(setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
-  )
 
-(load "~/.emacs.d/erc.el")
+  (load "~/.emacs.d/erc"))
 
 
 ;; No splash screen.
@@ -84,6 +83,9 @@
 ;; Javascript
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
+;; start erb in web mode
+(add-to-list 'auto-mode-alist '("\\.erb$" . web-mode))
+
 ;; start in css mode
 (add-to-list 'auto-mode-alist '("\\.css\\'" . css-mode))
 (add-to-list 'auto-mode-alist '("\\.scss\\'" . css-mode))
@@ -113,7 +115,14 @@
 (global-unset-key (kbd "C-z"))
 
 ;;theme
-(load-theme 'twilight-anti-bright t)
+;;(load-theme 'twilight-anti-bright t)
+(when (eq emacs-env 'work)
+  ;;  (load-theme 'adwaita t)
+  (load-theme 'cyberpunk t)
+  ;;use projectile
+  (global-set-key (kbd "C-x C-f") 'projectile-find-file)
+  (global-set-key (kbd "C-x C-o") 'find-file)
+  )
 
 ;;revert all buffers that are visiting a file
 (defun revert-all-buffers ()
@@ -135,23 +144,33 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(column-number-mode t)
+ '(grep-find-ignored-directories
+   (quote
+    ("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "ckeditor")))
+ '(grep-find-ignored-files
+   (quote
+    (".#*" "*.o" "*~" "*.bin" "*.lbin" "*.so" "*.a" "*.ln" "*.blg" "*.bbl" "*.elc" "*.lof" "*.glo" "*.idx" "*.lot" "*.fmt" "*.tfm" "*.class" "*.fas" "*.lib" "*.mem" "*.x86f" "*.sparcf" "*.dfsl" "*.pfsl" "*.d64fsl" "*.p64fsl" "*.lx64fsl" "*.lx32fsl" "*.dx64fsl" "*.dx32fsl" "*.fx64fsl" "*.fx32fsl" "*.sx64fsl" "*.sx32fsl" "*.wx64fsl" "*.wx32fsl" "*.fasl" "*.ufsl" "*.fsl" "*.dxl" "*.lo" "*.la" "*.gmo" "*.mo" "*.toc" "*.aux" "*.cp" "*.fn" "*.ky" "*.pg" "*.tp" "*.vr" "*.cps" "*.fns" "*.kys" "*.pgs" "*.tps" "*.vrs" "*.pyc" "*.pyo" "*.min" "*.min.js")))
+ '(show-paren-mode t)
+ '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:family "Nimbus Mono L" :foundry "urw" :slant normal :weight bold :height 113 :width normal)))))
 
-;;ruby-block
-;; (require 'ruby-block)
-;;   (setq ruby-block-delay 0)
-;;   (setq ruby-block-highlight-toggle t)
-;;   (ruby-block-mode t)
+;; cops busted this party
+(add-hook 'ruby-mode-hook 'rubocop-mode)
 
+;;rvm ruby crap
+(add-hook 'ruby-mode-hook 'rvm-activate-corresponding-ruby)
 
-;;icicles
-;;(require 'icicles)
+;;activate ruby-test mode
+(add-hook 'ruby-mode-hook 'ruby-test-mode)
+
+;;turn on 80 char column marker
+(column-marker-1 10)
 
 ;;Web-mode customizations
 (setq web-mode-markup-indent-offset 2)
@@ -161,8 +180,9 @@
 ;;ruby block
 (require 'ruby-block)
 (ruby-block-mode t)
+(setq ruby-block-highlight-toggle t)
 
-
+;;gotta have snippets
 (require 'yasnippet)
 (yas-global-mode 1)
 (yas-load-directory "~/.emacs.d/custom_snippets")
@@ -173,7 +193,7 @@
 (setq backup-directory-alist
       `(("." . ,(concat user-emacs-directory "backups"))))
 
-;; obvs
+;; obvs (this is crashy, especially w/helm mode the sads)
 ;;(nyan-mode +1)
 
 
@@ -187,3 +207,22 @@ might be bad."
 
 ;; Various superfluous white-space. Just say no.
 (add-hook 'before-save-hook 'cleanup-buffer-safe)
+
+
+(defun lint-ruby-file ()
+  ;;lint if ruby file
+  (
+   ;;when (string-match "\\.rb$" (buffer-file-name)) (rubocop-check-current-file)
+   )
+  )
+
+;;after save, lint ruby files
+(add-hook 'after-save-hook 'lint-ruby-file)
+
+(defun change-theme (theme)
+  "Disable all active themes and load THEME."
+  (interactive
+   (lexical-let ((themes (mapcar 'symbol-name (custom-available-themes))))
+     (list (intern (completing-read "Load custom theme: " themes)))))
+  (mapc 'disable-theme custom-enabled-themes)
+  (load-theme theme t))
