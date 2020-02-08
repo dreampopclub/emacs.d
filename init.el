@@ -22,9 +22,6 @@
 ;; Visual bell instead of beeping
 (setq ring-bell-function 'ignore)
 
-;;don't show toolbar
-;;(tool-bar-mode -1)
-
 (require 'ido)
 (ido-mode t)
 ;;(ido-ubiquitous-mode t)
