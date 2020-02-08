@@ -6,18 +6,15 @@
              '("melpa" . "https://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
-;; do ubuntu/home stuff
-
-
-;; do macbook and work stuff
+;; do osx only stuff
 (when (eq emacs-env 'osx)
   (setq mac-command-modifier 'meta)
   (setq mac-option-modifier 'super)
+  )
 
-  ;;use projectile
-  (global-set-key (kbd "C-x C-f") 'projectile-find-file)
-  (global-set-key (kbd "C-x C-o") 'find-file)
-)
+;;use projectile
+(global-set-key (kbd "C-x C-f") 'projectile-find-file)
+(global-set-key (kbd "C-x C-o") 'find-file)
 
 ;; No splash screen.
 (setq inhibit-startup-message t)
