@@ -3,39 +3,21 @@
 (require 'package)
 
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa" . "https://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
 ;; do ubuntu/home stuff
 
 
 ;; do macbook and work stuff
-(when (eq emacs-env 'mbp)
-  ;; Helpful keyboard tweak to make things easier on OS X.
+(when (eq emacs-env 'osx)
   (setq mac-command-modifier 'meta)
   (setq mac-option-modifier 'super)
-
-  ;;default open file dir
-  (setq default-directory "~/src/m3/")
-
-  ;;sass compile dirs
-  ;;(setq scss-output-directory "../../maestro_activity_engine/activities_general/")
-  ;;(setq scss-output-directory "../maestro_activity_engine/")
-  ;;(setq scss-output-directory "../../activities/")
-  ;;(setq scss-output-directory "../")
-  ;;(setq scss-compile-at-save t)
 
   ;;use projectile
   (global-set-key (kbd "C-x C-f") 'projectile-find-file)
   (global-set-key (kbd "C-x C-o") 'find-file)
-
-  ;;Use this if you can't load with the automator script
-  ;;Because the OS Gui app environment
-  ;;does not have anything from .bashrc
-  ;;(setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
-
-  (load "~/.emacs.d/erc"))
-
+)
 
 ;; No splash screen.
 (setq inhibit-startup-message t)
@@ -44,20 +26,16 @@
 (setq ring-bell-function 'ignore)
 
 ;;don't show toolbar
-(tool-bar-mode -1)
+;;(tool-bar-mode -1)
 
-;; Interactively do shit!
 (require 'ido)
 (ido-mode t)
 ;;(ido-ubiquitous-mode t)
 
-;; Handy line-related thingsgX
+;; Handy line-related things
 (global-linum-mode t)
 (column-number-mode t)
 (global-hl-line-mode t)
-
-;; Remember open buffers for next session.
-;; (desktop-save-mode t)
 
 ;; Highlight matching parens, use rainbow delimiters.
 (require 'rainbow-delimiters)
@@ -65,7 +43,6 @@
 ;;(global-rainbow-delimiters-mode t) this isn't working.
 (show-paren-mode t)
 
-;; Auto-completion is sick!
 (require 'auto-complete)
 (global-auto-complete-mode t)
 
@@ -151,6 +128,7 @@
  '(grep-find-ignored-files
    (quote
     (".#*" "*.o" "*~" "*.bin" "*.lbin" "*.so" "*.a" "*.ln" "*.blg" "*.bbl" "*.elc" "*.lof" "*.glo" "*.idx" "*.lot" "*.fmt" "*.tfm" "*.class" "*.fas" "*.lib" "*.mem" "*.x86f" "*.sparcf" "*.dfsl" "*.pfsl" "*.d64fsl" "*.p64fsl" "*.lx64fsl" "*.lx32fsl" "*.dx64fsl" "*.dx32fsl" "*.fx64fsl" "*.fx32fsl" "*.sx64fsl" "*.sx32fsl" "*.wx64fsl" "*.wx32fsl" "*.fasl" "*.ufsl" "*.fsl" "*.dxl" "*.lo" "*.la" "*.gmo" "*.mo" "*.toc" "*.aux" "*.cp" "*.fn" "*.ky" "*.pg" "*.tp" "*.vr" "*.cps" "*.fns" "*.kys" "*.pgs" "*.tps" "*.vrs" "*.pyc" "*.pyo" "*.min" "*.min.js")))
+ '(package-selected-packages (quote (magit rainbow-delimiters auto-complete)))
  '(show-paren-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces
@@ -161,16 +139,16 @@
  '(default ((t (:family "Nimbus Mono L" :foundry "urw" :slant normal :weight bold :height 113 :width normal)))))
 
 ;; cops busted this party
-(add-hook 'ruby-mode-hook 'rubocop-mode)
+;;(add-hook 'ruby-mode-hook 'rubocop-mode)
 
 ;;rvm ruby crap
-(add-hook 'ruby-mode-hook 'rvm-activate-corresponding-ruby)
+;;(add-hook 'ruby-mode-hook 'rvm-activate-corresponding-ruby)
 
 ;;activate ruby-test mode
-(add-hook 'ruby-mode-hook 'ruby-test-mode)
+;;(add-hook 'ruby-mode-hook 'ruby-test-mode)
 
 ;;turn on 80 char column marker
-(column-marker-1 10)
+;;(column-marker-1 10)
 
 ;;Web-mode customizations
 (setq web-mode-markup-indent-offset 2)
@@ -178,24 +156,19 @@
 (setq web-mode-code-indent-offset 2)
 
 ;;ruby block
-(require 'ruby-block)
-(ruby-block-mode t)
-(setq ruby-block-highlight-toggle t)
+;;(require 'ruby-block)
+;;(ruby-block-mode t)
+;;(setq ruby-block-highlight-toggle t)
 
-;;gotta have snippets
-(require 'yasnippet)
-(yas-global-mode 1)
-(yas-load-directory "~/.emacs.d/custom_snippets")
-(add-hook 'term-mode-hook (lambda()
-                            (setq yas-dont-activate t)))
+;;(require 'yasnippet)
+;;(yas-global-mode 1)
+;;(yas-load-directory "~/.emacs.d/custom_snippets")
+;;(add-hook 'term-mode-hook (lambda()
+;;                           (setq yas-dont-activate t)))
 
 ;;save backups in /backups
 (setq backup-directory-alist
       `(("." . ,(concat user-emacs-directory "backups"))))
-
-;; obvs (this is crashy, especially w/helm mode the sads)
-;;(nyan-mode +1)
-
 
 (defun cleanup-buffer-safe ()
   "Perform a bunch of safe operations on the whitespace content of a buffer.
