@@ -21,12 +21,9 @@ There are two things you can do about this warning:
   )
 (package-initialize)
 
+;;theme
+(load-theme 'cyberpunk t)
 
-;; (require 'package)
-
-;; (add-to-list 'package-archives
-;;              '("melpa" . "https://melpa.milkbox.net/packages/") t)
-;; (package-initialize)
 
 ;; do osx only stuff
 (when (eq emacs-env 'osx)
