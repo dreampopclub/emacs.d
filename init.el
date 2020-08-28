@@ -1,10 +1,32 @@
 (load "~/.emacs-env.el")
 
-(require 'package)
+;; use libressl, this fixes an error message re ssl when conntecting to melpa
+(require 'gnutls)
+(add-to-list 'gnutls-trustfiles "/usr/local/etc/openssl/cert.pem")
 
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.milkbox.net/packages/") t)
+(require 'package)
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+       (proto (if no-ssl "http" "https")))
+  (when no-ssl (warn "\
+Your version of Emacs does not support SSL connections,
+which is unsafe because it allows man-in-the-middle attacks.
+There are two things you can do about this warning:
+1. Install an Emacs version that does support SSL and be safe.
+2. Remove this warning from your init file so you won't see it again."))
+  ;; (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+  ;; Comment/uncomment this line to enable MELPA Stable if desired.  See `package-archive-priorities`
+  ;;  and `package-pinned-packages`. Most users will not need or want to do this.
+  (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+  )
 (package-initialize)
+
+
+;; (require 'package)
+
+;; (add-to-list 'package-archives
+;;              '("melpa" . "https://melpa.milkbox.net/packages/") t)
+;; (package-initialize)
 
 ;; do osx only stuff
 (when (eq emacs-env 'osx)
@@ -47,6 +69,7 @@
 ;(setq c-basic-indent 2)
 (setq tab-width 2)
 (setq js-indent-level 2)
+(setq js2-basic-offset 2)
 (setq css-indent-offset 2)
 (setq js2-basic-offset 2)
 ;;(electric-indent-mode t)
@@ -81,19 +104,19 @@
 (global-set-key (kbd "<C-return>") 'open-line-below)
 (global-set-key (kbd "<C-M-return>") 'open-line-above)
 (global-set-key (kbd "C-c c") 'comment-or-uncomment-region)
-(global-set-key (kbd "C-x g") 'goto-line)
+;;(global-set-key (kbd "C-x g") 'goto-line) TODO: assign new keybinding. conflict with magit status
 ;; No more minimizing Emacs by accident.
 (global-unset-key (kbd "C-z"))
 
 ;;theme
 ;;(load-theme 'twilight-anti-bright t)
-(when (eq emacs-env 'work)
+;;(when (eq emacs-env 'work)
   ;;  (load-theme 'adwaita t)
-  (load-theme 'cyberpunk t)
+  (load-theme 'monokai t)
   ;;use projectile
   (global-set-key (kbd "C-x C-f") 'projectile-find-file)
   (global-set-key (kbd "C-x C-o") 'find-file)
-  )
+  ;;)
 
 ;;revert all buffers that are visiting a file
 (defun revert-all-buffers ()
@@ -122,7 +145,9 @@
  '(grep-find-ignored-files
    (quote
     (".#*" "*.o" "*~" "*.bin" "*.lbin" "*.so" "*.a" "*.ln" "*.blg" "*.bbl" "*.elc" "*.lof" "*.glo" "*.idx" "*.lot" "*.fmt" "*.tfm" "*.class" "*.fas" "*.lib" "*.mem" "*.x86f" "*.sparcf" "*.dfsl" "*.pfsl" "*.d64fsl" "*.p64fsl" "*.lx64fsl" "*.lx32fsl" "*.dx64fsl" "*.dx32fsl" "*.fx64fsl" "*.fx32fsl" "*.sx64fsl" "*.sx32fsl" "*.wx64fsl" "*.wx32fsl" "*.fasl" "*.ufsl" "*.fsl" "*.dxl" "*.lo" "*.la" "*.gmo" "*.mo" "*.toc" "*.aux" "*.cp" "*.fn" "*.ky" "*.pg" "*.tp" "*.vr" "*.cps" "*.fns" "*.kys" "*.pgs" "*.tps" "*.vrs" "*.pyc" "*.pyo" "*.min" "*.min.js")))
- '(package-selected-packages (quote (magit rainbow-delimiters auto-complete)))
+ '(package-selected-packages
+   (quote
+    (web-mode cyberpunk-theme magit rainbow-delimiters auto-complete)))
  '(show-paren-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces
@@ -132,10 +157,9 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Nimbus Mono L" :foundry "urw" :slant normal :weight bold :height 113 :width normal)))))
 
-;; cops busted this party
 ;;(add-hook 'ruby-mode-hook 'rubocop-mode)
 
-;;rvm ruby crap
+;;rvm ruby stuff
 ;;(add-hook 'ruby-mode-hook 'rvm-activate-corresponding-ruby)
 
 ;;activate ruby-test mode
@@ -153,12 +177,6 @@
 ;;(require 'ruby-block)
 ;;(ruby-block-mode t)
 ;;(setq ruby-block-highlight-toggle t)
-
-;;(require 'yasnippet)
-;;(yas-global-mode 1)
-;;(yas-load-directory "~/.emacs.d/custom_snippets")
-;;(add-hook 'term-mode-hook (lambda()
-;;                           (setq yas-dont-activate t)))
 
 ;;save backups in /backups
 (setq backup-directory-alist
@@ -193,3 +211,11 @@ might be bad."
      (list (intern (completing-read "Load custom theme: " themes)))))
   (mapc 'disable-theme custom-enabled-themes)
   (load-theme theme t))
+
+(setq mac-option-key-is-meta nil
+      mac-command-key-is-meta t
+      mac-command-modifier 'meta
+      mac-option-modifier 'none)
+
+(add-to-list 'default-frame-alist
+                       '(font . "Courier"))
