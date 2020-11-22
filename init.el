@@ -21,10 +21,6 @@ There are two things you can do about this warning:
   )
 (package-initialize)
 
-;;theme
-(load-theme 'cyberpunk t)
-
-
 ;; do osx only stuff
 (when (eq emacs-env 'osx)
   (setq mac-command-modifier 'meta)
@@ -45,7 +41,7 @@ There are two things you can do about this warning:
 (ido-mode t)
 ;;(ido-ubiquitous-mode t)
 
-;; Handy line-related things
+;; Line nums
 (global-linum-mode t)
 (column-number-mode t)
 (global-hl-line-mode t)
@@ -58,7 +54,7 @@ There are two things you can do about this warning:
 
 (require 'auto-complete)
 (global-auto-complete-mode t)
-
+(add-hook 'ruby-mode-hook 'auto-complete-mode)
 ;; Tabs and alignment
 (setq-default indent-tabs-mode nil)
 (setq indent-tabs-mode nil)
@@ -105,10 +101,9 @@ There are two things you can do about this warning:
 ;; No more minimizing Emacs by accident.
 (global-unset-key (kbd "C-z"))
 
-;;theme
-;;(load-theme 'twilight-anti-bright t)
+
 ;;(when (eq emacs-env 'work)
-  ;;  (load-theme 'adwaita t)
+
   (load-theme 'monokai t)
   ;;use projectile
   (global-set-key (kbd "C-x C-f") 'projectile-find-file)
@@ -137,14 +132,11 @@ There are two things you can do about this warning:
  ;; If there is more than one, they won't work right.
  '(column-number-mode t)
  '(grep-find-ignored-directories
-   (quote
-    ("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "ckeditor")))
+   '("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "ckeditor"))
  '(grep-find-ignored-files
-   (quote
-    (".#*" "*.o" "*~" "*.bin" "*.lbin" "*.so" "*.a" "*.ln" "*.blg" "*.bbl" "*.elc" "*.lof" "*.glo" "*.idx" "*.lot" "*.fmt" "*.tfm" "*.class" "*.fas" "*.lib" "*.mem" "*.x86f" "*.sparcf" "*.dfsl" "*.pfsl" "*.d64fsl" "*.p64fsl" "*.lx64fsl" "*.lx32fsl" "*.dx64fsl" "*.dx32fsl" "*.fx64fsl" "*.fx32fsl" "*.sx64fsl" "*.sx32fsl" "*.wx64fsl" "*.wx32fsl" "*.fasl" "*.ufsl" "*.fsl" "*.dxl" "*.lo" "*.la" "*.gmo" "*.mo" "*.toc" "*.aux" "*.cp" "*.fn" "*.ky" "*.pg" "*.tp" "*.vr" "*.cps" "*.fns" "*.kys" "*.pgs" "*.tps" "*.vrs" "*.pyc" "*.pyo" "*.min" "*.min.js")))
+   '(".#*" "*.o" "*~" "*.bin" "*.lbin" "*.so" "*.a" "*.ln" "*.blg" "*.bbl" "*.elc" "*.lof" "*.glo" "*.idx" "*.lot" "*.fmt" "*.tfm" "*.class" "*.fas" "*.lib" "*.mem" "*.x86f" "*.sparcf" "*.dfsl" "*.pfsl" "*.d64fsl" "*.p64fsl" "*.lx64fsl" "*.lx32fsl" "*.dx64fsl" "*.dx32fsl" "*.fx64fsl" "*.fx32fsl" "*.sx64fsl" "*.sx32fsl" "*.wx64fsl" "*.wx32fsl" "*.fasl" "*.ufsl" "*.fsl" "*.dxl" "*.lo" "*.la" "*.gmo" "*.mo" "*.toc" "*.aux" "*.cp" "*.fn" "*.ky" "*.pg" "*.tp" "*.vr" "*.cps" "*.fns" "*.kys" "*.pgs" "*.tps" "*.vrs" "*.pyc" "*.pyo" "*.min" "*.min.js"))
  '(package-selected-packages
-   (quote
-    (web-mode cyberpunk-theme magit rainbow-delimiters auto-complete)))
+   '(projectile-rails ac-inf-ruby robe inf-ruby web-mode magit rainbow-delimiters auto-complete))
  '(show-paren-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces
@@ -199,7 +191,7 @@ might be bad."
   )
 
 ;;after save, lint ruby files
-(add-hook 'after-save-hook 'lint-ruby-file)
+;;(add-hook 'after-save-hook 'lint-ruby-file)
 
 (defun change-theme (theme)
   "Disable all active themes and load THEME."
@@ -215,4 +207,18 @@ might be bad."
       mac-option-modifier 'none)
 
 (add-to-list 'default-frame-alist
-                       '(font . "Courier"))
+             '(font . "Courier"))
+
+;; (setq magit-repository-directories
+;;         `(("~/src/tarotjournal/" . 0)))
+;;(call-interactively 'magit-status) this won't open magit-repository-directories for some reason
+
+(eval-after-load 'auto-complete
+  '(add-to-list 'ac-modes 'inf-ruby-mode))
+(add-hook 'inf-ruby-mode-hook 'ac-inf-ruby-enable)
+
+(eval-after-load 'inf-ruby '
+  '(define-key inf-ruby-mode-map (kbd "TAB") 'auto-complete))
+
+(eval-after-load 'projectile-rails'
+  (define-key projectile-rails-mode-map (kbd "C-c r") 'projectile-rails-command-map))
